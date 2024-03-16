@@ -18,12 +18,7 @@ let initOptions = {
 
 let kc = new Keycloak(initOptions);
 
-kc.init({
-  onLoad: initOptions.onLoad,
-  KeycloakResponseType: 'code',
-  silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html", checkLoginIframe: false,
-  pkceMethod: 'S256'
-}).then((auth) => {
+kc.init({ onLoad: "login-required", checkLoginIframe: false }).then((auth) => {
   if (!auth) {
     window.location.reload();
   } else {
