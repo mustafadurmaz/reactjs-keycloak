@@ -36,6 +36,7 @@ kc.init({ onLoad: "login-required", checkLoginIframe: false }).then((auth) => {
 function App() {
 
   const [infoMessage, setInfoMessage] = useState('');
+  const [advancedExampleOpen, setAdvancedExampleOpen] = React.useState(false);
 
   return (
     <div className="App">
@@ -80,6 +81,19 @@ function App() {
           </Card>
         </div>
         <div className='col-2'></div>
+      </div>
+
+      <div className='grid'>
+        
+      <Lightbox
+        open={advancedExampleOpen}
+        close={() => setAdvancedExampleOpen(false)}
+        slides={advancedSlides}
+        plugins={[Captions, Fullscreen, Slideshow, Thumbnails, Video, Zoom]}
+      />
+
+      <LightboxButton onClick={() => setAdvancedExampleOpen(true)} />
+
       </div>
 
 
