@@ -1,65 +1,135 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
-import '/node_modules/primeflex/primeflex.css'
-import { Button } from 'primereact/button';
-import { Card } from 'primereact/card';
+import "/node_modules/primeflex/primeflex.css";
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
 
-import Keycloak from 'keycloak-js';
+import Lightbox from "yet-another-react-lightbox";
+import Captions from "yet-another-react-lightbox/plugins/captions";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Video from "yet-another-react-lightbox/plugins/video";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/plugins/captions.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import { advancedSlides } from "./data/slides";
+
+import Keycloak from "keycloak-js";
 
 let initOptions = {
-  url: process.env.REACT_APP_API_KEYCLOAK + '/auth',
+  url: process.env.REACT_APP_API_KEYCLOAK + "/auth",
   realm: process.env.REACT_APP_KEYCLOAK_REALM,
   clientId: process.env.REACT_APP_KEYCLOAK_CLIENTID,
 
   // silentCheckSsoRedirectUri: (window.location.origin + "/silent-check-sso.html")
-}
+};
 
 let kc = new Keycloak(initOptions);
 
-kc.init({ onLoad: "login-required", checkLoginIframe: false }).then((auth) => {
-  if (!auth) {
-    window.location.reload();
-  } else {
-    console.info("Authenticated");
-    console.log('auth', auth)
-    console.log('Keycloak', kc)
-    kc.onTokenExpired = () => {
-      console.log('token expired')
+kc.init({ onLoad: "login-required", checkLoginIframe: false }).then(
+  (auth) => {
+    if (!auth) {
+      window.location.reload();
+    } else {
+      console.info("Authenticated");
+      console.log("auth", auth);
+      console.log("Keycloak", kc);
+      kc.onTokenExpired = () => {
+        console.log("token expired");
+      };
     }
+  },
+  () => {
+    console.error("Authenticated Failed");
   }
-}, () => {
-  console.error("Authenticated Failed");
-});
+);
 
 function App() {
-
-  const [infoMessage, setInfoMessage] = useState('');
+  const [infoMessage, setInfoMessage] = useState("");
   const [advancedExampleOpen, setAdvancedExampleOpen] = React.useState(false);
 
   return (
     <div className="App">
       {/* <Auth /> */}
-      <div className='grid'>
-        <div className='col-12'>
+      <div className="grid">
+        <div className="col-12">
           <h1>My Awesome React App</h1>
         </div>
-        <div className='col-12'>
-          <h1 id='app-header-2'>Secured with Keycloak</h1>
+        <div className="col-12">
+          <h1 id="app-header-2">Secured with Keycloak</h1>
         </div>
       </div>
       <div className="grid">
         <div className="col">
-        <Button onClick={() => { setInfoMessage(kc.authenticated ? 'Authenticated: TRUE' : 'Authenticated: FALSE') }} className="m-1" label='Is Authenticated' />
-         
-          <Button onClick={() => { kc.login() }} className='m-1' label='Login' severity="success" />
-          <Button onClick={() => { setInfoMessage(kc.token) }} className="m-1" label='Show Access Token' severity="info" />
-          <Button onClick={() => { setInfoMessage(JSON.stringify(kc.tokenParsed)) }} className="m-1" label='Show Parsed Access token' severity="info" />
-          <Button onClick={() => { setInfoMessage(kc.isTokenExpired(5).toString()) }} className="m-1" label='Check Token expired' severity="warning" />
-          <Button onClick={() => { kc.updateToken(10).then((refreshed)=>{ setInfoMessage('Token Refreshed: ' + refreshed.toString()) }, (e)=>{setInfoMessage('Refresh Error')}) }} className="m-1" label='Update Token (if about to expire)' />  {/** 10 seconds */}
-          <Button onClick={() => { kc.logout({ redirectUri: 'http://localhost:3000/' }) }} className="m-1" label='Logout' severity="danger" />
-          
+          <Button
+            onClick={() => {
+              setInfoMessage(
+                kc.authenticated
+                  ? "Authenticated: TRUE"
+                  : "Authenticated: FALSE"
+              );
+            }}
+            className="m-1"
+            label="Is Authenticated"
+          />
+          <Button
+            onClick={() => {
+              kc.login();
+            }}
+            className="m-1"
+            label="Login"
+            severity="success"
+          />
+          <Button
+            onClick={() => {
+              setInfoMessage(kc.token);
+            }}
+            className="m-1"
+            label="Show Access Token"
+            severity="info"
+          />
+          <Button
+            onClick={() => {
+              setInfoMessage(JSON.stringify(kc.tokenParsed));
+            }}
+            className="m-1"
+            label="Show Parsed Access token"
+            severity="info"
+          />
+          <Button
+            onClick={() => {
+              setInfoMessage(kc.isTokenExpired(5).toString());
+            }}
+            className="m-1"
+            label="Check Token expired"
+            severity="warning"
+          />
+          <Button
+            onClick={() => {
+              kc.updateToken(10).then(
+                (refreshed) => {
+                  setInfoMessage("Token Refreshed: " + refreshed.toString());
+                },
+                (e) => {
+                  setInfoMessage("Refresh Error");
+                }
+              );
+            }}
+            className="m-1"
+            label="Update Token (if about to expire)"
+          />{" "}
+          {/** 10 seconds */}
+          <Button
+            onClick={() => {
+              kc.logout({ redirectUri: "http://localhost:3000/" });
+            }}
+            className="m-1"
+            label="Logout"
+            severity="danger"
+          />
         </div>
       </div>
 
@@ -69,38 +139,33 @@ function App() {
       </div>
         </div> */}
 
-
-      <div className='grid'>
-        <div className='col-2'></div>
-        <div className='col-8'>
-        <h3>Info Pane</h3>
+      <div className="grid">
+        <div className="col-2"></div>
+        <div className="col-8">
+          <h3>Info Pane</h3>
           <Card>
-            <p style={{ wordBreak: 'break-all' }} id='infoPanel'>
+            <p style={{ wordBreak: "break-all" }} id="infoPanel">
               {infoMessage}
             </p>
           </Card>
         </div>
-        <div className='col-2'></div>
+        <div className="col-2"></div>
       </div>
 
-      <div className='grid'>
-        
-      <Lightbox
-        open={advancedExampleOpen}
-        close={() => setAdvancedExampleOpen(false)}
-        slides={advancedSlides}
-        plugins={[Captions, Fullscreen, Slideshow, Thumbnails, Video, Zoom]}
-      />
+      <div className="grid">
+        <div className="col-12">
+          <Lightbox
+            open={advancedExampleOpen}
+            close={() => setAdvancedExampleOpen(false)}
+            slides={advancedSlides}
+            plugins={[Captions, Fullscreen, Slideshow, Thumbnails, Video, Zoom]}
+          />
 
-      <LightboxButton onClick={() => setAdvancedExampleOpen(true)} />
-
+          <Button label="Lightbox" onClick={() => setAdvancedExampleOpen(true)} />
+        </div>
       </div>
-
-
-
     </div>
   );
 }
-
 
 export default App;
