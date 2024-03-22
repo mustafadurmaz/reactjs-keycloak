@@ -15,7 +15,7 @@ import Video from "yet-another-react-lightbox/plugins/video";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-import { advancedSlides } from "./data/slides";
+import { advancedSlides, slides } from "./data/slides";
 
 import Keycloak from "keycloak-js";
 
@@ -49,6 +49,7 @@ kc.init({ onLoad: "login-required", checkLoginIframe: false }).then(
 
 function App() {
   const [infoMessage, setInfoMessage] = useState("");
+  const [basicExampleOpen, setBasicExampleOpen] = React.useState(false);
   const [advancedExampleOpen, setAdvancedExampleOpen] = React.useState(false);
 
   return (
@@ -161,7 +162,18 @@ function App() {
             plugins={[Captions, Fullscreen, Slideshow, Thumbnails, Video, Zoom]}
           />
 
-          <Button label="Lightbox" onClick={() => setAdvancedExampleOpen(true)} />
+          <Button
+            label="Advanced"
+            onClick={() => setAdvancedExampleOpen(true)}
+          />
+
+          <Lightbox
+            open={basicExampleOpen}
+            close={() => setBasicExampleOpen(false)}
+            slides={slides}
+          />
+
+          <Button className="ml-4" label="Basic" onClick={() => setBasicExampleOpen(true)} />
         </div>
       </div>
     </div>
